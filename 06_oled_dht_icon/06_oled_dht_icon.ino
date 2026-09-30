@@ -23,16 +23,18 @@ U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(
 
 // 繪製左側溫度計圖示
 void drawThermometer(int x, int y) {
-  u8g2.drawRFrame(x + 2, y, 5, 13, 2); // 縮小後的溫度計外框
-  u8g2.drawCircle(x + 4, y + 13, 4);    // 底部圓球
-  u8g2.drawVLine(x + 4, y + 5, 8);      // 內部液柱
-  u8g2.drawDisc(x + 4, y + 13, 2);      // 液柱底部
+  // 相較上一版，圖示寬高與線條位置放大約兩倍
+  u8g2.drawRFrame(x + 4, y, 10, 26, 4); // 溫度計外框
+  u8g2.drawCircle(x + 8, y + 26, 8);    // 底部圓球
+  u8g2.drawVLine(x + 8, y + 10, 16);    // 內部液柱
+  u8g2.drawDisc(x + 8, y + 26, 4);      // 液柱底部
 }
 
 // 繪製右側水滴圖示
 void drawDroplet(int x, int y) {
-  u8g2.drawTriangle(x + 5, y, x, y + 8, x + 10, y + 8); // 縮小後的水滴尖端
-  u8g2.drawDisc(x + 5, y + 8, 5);                       // 水滴圓身
+  // 相較上一版，水滴寬高放大約兩倍
+  u8g2.drawTriangle(x + 10, y, x, y + 16, x + 20, y + 16); // 水滴尖端
+  u8g2.drawDisc(x + 10, y + 16, 10);                       // 水滴圓身
 }
 
 void setup() {
@@ -63,25 +65,25 @@ void loop() {
     u8g2.setFont(u8g2_font_6x10_tf);
     u8g2.drawStr(20, 32, "DHT11 read error");
   } else {
-    // 左區：縮小的溫度計圖示與標籤，避免與右區重疊
-    drawThermometer(8, 4);
+    // 左區：放大溫度計圖示；標籤右移，避免互相重疊
+    drawThermometer(5, 3);
     u8g2.setFont(u8g2_font_6x10_tf);
-    u8g2.drawStr(20, 19, "TEMP");
+    u8g2.drawStr(30, 21, "TEMP");
 
-    // 左區：縮小後的攝氏溫度數值
+    // 左區：攝氏溫度數值
     u8g2.setFont(u8g2_font_ncenB12_tr);
-    u8g2.setCursor(10, 53);
+    u8g2.setCursor(10, 59);
     u8g2.print(temperature, 0);
     u8g2.print("\xb0" "C");
 
-    // 右區：縮小的水滴圖示與標籤
-    drawDroplet(74, 5);
+    // 右區：放大水滴圖示；標籤右移並維持在螢幕範圍內
+    drawDroplet(68, 3);
     u8g2.setFont(u8g2_font_6x10_tf);
-    u8g2.drawStr(89, 19, "HUMI");
+    u8g2.drawStr(101, 21, "HUMI");
 
-    // 右區：縮小後的相對濕度數值
+    // 右區：相對濕度數值
     u8g2.setFont(u8g2_font_ncenB12_tr);
-    u8g2.setCursor(82, 53);
+    u8g2.setCursor(82, 59);
     u8g2.print(humidity, 0);
     u8g2.print("%");
   }

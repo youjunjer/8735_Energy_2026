@@ -23,16 +23,16 @@ U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(
 
 // 繪製左側溫度計圖示
 void drawThermometer(int x, int y) {
-  u8g2.drawRFrame(x + 3, y, 7, 19, 3); // 溫度計外框
-  u8g2.drawCircle(x + 6, y + 20, 5);   // 底部圓球
-  u8g2.drawVLine(x + 6, y + 7, 12);    // 內部液柱
-  u8g2.drawDisc(x + 6, y + 20, 3);     // 液柱底部
+  u8g2.drawRFrame(x + 2, y, 5, 13, 2); // 縮小後的溫度計外框
+  u8g2.drawCircle(x + 4, y + 13, 4);    // 底部圓球
+  u8g2.drawVLine(x + 4, y + 5, 8);      // 內部液柱
+  u8g2.drawDisc(x + 4, y + 13, 2);      // 液柱底部
 }
 
 // 繪製右側水滴圖示
 void drawDroplet(int x, int y) {
-  u8g2.drawTriangle(x + 8, y, x, y + 12, x + 16, y + 12); // 水滴尖端
-  u8g2.drawDisc(x + 8, y + 12, 8);                        // 水滴圓身
+  u8g2.drawTriangle(x + 5, y, x, y + 8, x + 10, y + 8); // 縮小後的水滴尖端
+  u8g2.drawDisc(x + 5, y + 8, 5);                       // 水滴圓身
 }
 
 void setup() {
@@ -60,28 +60,28 @@ void loop() {
 
   if (isnan(temperature) || isnan(humidity)) {
     // 感測器讀取失敗時顯示提示
-    u8g2.setFont(u8g2_font_6x12_tf);
-    u8g2.drawStr(13, 32, "DHT11 read error");
+    u8g2.setFont(u8g2_font_6x10_tf);
+    u8g2.drawStr(20, 32, "DHT11 read error");
   } else {
-    // 左區：溫度計圖示與 TEMP 標籤
-    drawThermometer(7, 6);
-    u8g2.setFont(u8g2_font_ncenB12_tr);
-    u8g2.drawStr(22, 24, "TEMP");
+    // 左區：縮小的溫度計圖示與標籤，避免與右區重疊
+    drawThermometer(8, 4);
+    u8g2.setFont(u8g2_font_6x10_tf);
+    u8g2.drawStr(20, 19, "TEMP");
 
-    // 左區：放大的攝氏溫度數值
-    u8g2.setFont(u8g2_font_ncenB18_tr);
-    u8g2.setCursor(5, 57);
+    // 左區：縮小後的攝氏溫度數值
+    u8g2.setFont(u8g2_font_ncenB12_tr);
+    u8g2.setCursor(10, 53);
     u8g2.print(temperature, 0);
     u8g2.print("\xb0" "C");
 
-    // 右區：水滴圖示與 HUMI 標籤
-    drawDroplet(72, 6);
-    u8g2.setFont(u8g2_font_ncenB12_tr);
-    u8g2.drawStr(91, 24, "HUMI");
+    // 右區：縮小的水滴圖示與標籤
+    drawDroplet(74, 5);
+    u8g2.setFont(u8g2_font_6x10_tf);
+    u8g2.drawStr(89, 19, "HUMI");
 
-    // 右區：放大的相對濕度數值
-    u8g2.setFont(u8g2_font_ncenB18_tr);
-    u8g2.setCursor(76, 57);
+    // 右區：縮小後的相對濕度數值
+    u8g2.setFont(u8g2_font_ncenB12_tr);
+    u8g2.setCursor(82, 53);
     u8g2.print(humidity, 0);
     u8g2.print("%");
   }

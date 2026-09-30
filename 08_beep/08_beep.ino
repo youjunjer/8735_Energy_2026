@@ -1,13 +1,13 @@
 /*
   HUB-8735 Ultra + passive buzzer
 
-  Passive buzzer signal -> IO18 (PWM)
+  Passive buzzer signal -> IO11 (PWM)
   Buzzer GND            -> board GND
 
   Alternate a rising and falling tone sweep to imitate a fire-truck siren.
 */
 
-const uint8_t BUZZER_PIN = 18;
+const uint8_t BUZZER_PIN = 11;
 const int SIREN_LOW_HZ = 650;
 const int SIREN_HIGH_HZ = 1250;
 const int SIREN_STEP_HZ = 10;

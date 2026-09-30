@@ -43,11 +43,59 @@ void drawThermometer(int x, int y, float temperature) {
   }
 }
 
-// 繪製右側水滴圖示
-void drawDroplet(int x, int y) {
-  // 相較上一版，水滴寬高放大約兩倍
-  u8g2.drawTriangle(x + 10, y, x, y + 16, x + 20, y + 16); // 水滴尖端
-  u8g2.drawDisc(x + 10, y + 16, 10);                       // 水滴圓身
+// 繪製右側全高水滴，內部填充依 0～100% 濕度由下往上變化
+void drawDroplet(int x, int y, float humidity) {
+  const int centerX = x + 11;
+  const int tipY = y;
+  const int shoulderY = y + 18;
+  const int sideBottomY = y + 42;
+  const int bottomY = y + 54;
+
+  // 將水滴填充高度限制在 0～100%
+  float boundedHumidity = humidity;
+  if (boundedHumidity < 0.0f) boundedHumidity = 0.0f;
+  if (boundedHumidity > 100.0f) boundedHumidity = 100.0f;
+  // 尖端與最底端都納入高度計算，共 55 個像素列
+  int fillHeight = (int)((boundedHumidity * (bottomY - tipY + 1) / 100.0f) + 0.5f);
+  int fillStartY = bottomY + 1 - fillHeight;
+
+  // 水滴外框：尖端、兩側與圓弧底部，整體高度約 55 像素
+  u8g2.drawLine(centerX, tipY, x, shoulderY);
+  u8g2.drawLine(centerX, tipY, x + 22, shoulderY);
+  u8g2.drawVLine(x, shoulderY, sideBottomY - shoulderY + 1);
+  u8g2.drawVLine(x + 22, shoulderY, sideBottomY - shoulderY + 1);
+
+  // 以折線描繪圓弧底部，避免使用完整圓形產生內部橫線
+  const int arcX[] = {0, 1, 4, 7, 11, 15, 18, 21, 22};
+  const int arcY[] = {42, 46, 51, 53, 54, 53, 51, 46, 42};
+  for (int i = 0; i < 8; i++) {
+    u8g2.drawLine(x + arcX[i], y + arcY[i], x + arcX[i + 1], y + arcY[i + 1]);
+  }
+
+  // 依每一列水滴外形計算可填充寬度，讓液面輪廓留在水滴外框內
+  // 圓弧由 y+42 收至最底端 y+54；各列半寬與外框輪廓對齊
+  const int bottomHalfWidth[] = {0, 10, 10, 10, 10, 9, 8, 8, 7, 7, 6, 5, 0};
+  for (int row = fillStartY; row <= bottomY; row++) {
+    int halfWidth = 0;
+    int offsetY = row - y;
+
+    if (row == tipY) {
+      halfWidth = 0;
+    } else if (row < shoulderY) {
+      halfWidth = (offsetY * 11 / 18) - 1;
+    } else if (row <= sideBottomY) {
+      halfWidth = 10;
+    } else {
+      int arcIndex = row - sideBottomY;
+      if (arcIndex >= 0 && arcIndex < 13) {
+        halfWidth = bottomHalfWidth[arcIndex];
+      }
+    }
+
+    if (halfWidth >= 0) {
+      u8g2.drawHLine(centerX - halfWidth, row, halfWidth * 2 + 1);
+    }
+  }
 }
 
 void setup() {
@@ -93,16 +141,22 @@ void loop() {
     u8g2.setFont(u8g2_font_6x10_tf);
     u8g2.drawStr(22, 53, "10-40 C");
 
-    // 右區：放大水滴圖示；標籤右移並維持在螢幕範圍內
-    drawDroplet(68, 3);
-    u8g2.setFont(u8g2_font_6x10_tf);
-    u8g2.drawStr(101, 21, "HUMI");
+    // 右區：全高水滴，內部填充依 0～100% 濕度變化
+    drawDroplet(103, 4, humidity);
 
-    // 右區：相對濕度數值
+    // 濕度標籤與讀值放在水滴左側
+    u8g2.setFont(u8g2_font_6x10_tf);
+    u8g2.drawStr(68, 18, "HUMI");
+
+    // 顯示實際相對濕度
     u8g2.setFont(u8g2_font_ncenB12_tr);
-    u8g2.setCursor(82, 59);
+    u8g2.setCursor(68, 37);
     u8g2.print(humidity, 0);
     u8g2.print("%");
+
+    // 標示水滴填充範圍
+    u8g2.setFont(u8g2_font_5x8_tf);
+    u8g2.drawStr(68, 53, "0-100%");
   }
 
   // 將畫面送到 OLED

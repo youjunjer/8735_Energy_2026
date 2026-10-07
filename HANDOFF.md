@@ -8,7 +8,8 @@
 - GitHub：`https://github.com/youjunjer/8735_Energy_2026.git`
 - 遠端名稱：`origin`
 - 主要分支：`main`
-- 目前最新 commit：`a0ee3ed`（新增 `09_oled_dht_led_beep`）
+- 程式基準 commit：`a0ee3ed`（新增 `09_oled_dht_led_beep`）
+- 交接文件提交後的最新 commit：請以 `git log -1 --oneline` 確認
 
 ## Arduino CLI 重要路徑
 

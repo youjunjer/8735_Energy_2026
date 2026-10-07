@@ -8,7 +8,7 @@
 - GitHub：`https://github.com/youjunjer/8735_Energy_2026.git`
 - 遠端名稱：`origin`
 - 主要分支：`main`
-- 程式基準 commit：`a0ee3ed`（新增 `09_oled_dht_led_beep`）
+- 程式基準 commit：`a0ee3ed`（新增 `09_oled_dht_led_beep`）；最新 AQI 程式尚待提交
 - 交接文件提交後的最新 commit：請以 `git log -1 --oneline` 確認
 
 ## Arduino CLI 重要路徑
@@ -95,13 +95,15 @@ upload success
 - `07_oled_dht_led`：溫度 >25°C 紅燈、濕度 >80% 黃燈，皆正常亮綠燈。
 - `08_beep`：IO11 無源蜂鳴器消防車升降警笛。
 - `09_oled_dht_led_beep`：07 加上 IO11 警報；溫度或濕度任一異常時播放警笛，皆正常時停止。
+- `10_wifi_aqi_oled`：使用 Wi-Fi 與 ArduinoJson 取得環境部 AQI API，篩選桃園市中壢測站，每分鐘更新 OLED 上的 AQI 與 PM2.5；連線與更新狀態會顯示於 OLED。
 
 目前最新使用程式是：
-`D:\115智慧節能\09_oled_dht_led_beep\09_oled_dht_led_beep.ino`
+`D:\115智慧節能\10_wifi_aqi_oled\10_wifi_aqi_oled.ino`
 
 ## 版本紀錄
 
 - v0.10.0：新增 `09_oled_dht_led_beep`，已編譯並於 COM3 成功燒錄。
+- v0.11.0：新增 `10_wifi_aqi_oled`，已編譯成功；尚未燒錄。使用 Wi-Fi SSID `a`，每 60 秒抓取 API 並顯示桃園市中壢 AQI／PM2.5。
 - v0.9.1：蜂鳴器由 IO18 改到 IO11，已編譯並於 COM3 成功燒錄。
 - v0.9.0：新增 `08_beep`；原 IO18 版本實測無聲。
 - v0.8.0：新增 `07_oled_dht_led`。
@@ -113,10 +115,11 @@ upload success
 
 使用者要求後續整個專案同步 GitHub，不是只同步單一程式；每次程式變更都要更新 `CHANGELOG.md`、建立版號、commit 並 push 到 `origin main`。
 
-目前工作目錄有兩張未追蹤成果照片，先前刻意沒有納入程式提交：
+目前工作目錄有三張未追蹤成果照片，先前刻意沒有納入程式提交：
 
 - `成果照片/WIN_20260930_15_53_59_Pro.jpg`
 - `成果照片/WIN_20260930_16_14_11_Pro.jpg`
+- `成果照片/WIN_20260930_16_46_04_Pro.jpg`
 
 提交前先執行：
 

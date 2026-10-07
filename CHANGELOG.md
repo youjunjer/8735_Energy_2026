@@ -2,6 +2,12 @@
 
 本專案採用語意化版本號（SemVer）。每次程式更新會記錄版本號與變更摘要。
 
+## v0.11.0 — 2026-10-07
+
+- 新增 `10_wifi_aqi_oled`：使用 Wi-Fi 連線至環境部 AQI API，以 ArduinoJson 解析資料並篩選桃園市中壢測站。
+- OLED 顯示中壢 AQI 與 PM2.5；Wi-Fi 連線時顯示 `WiFi connecting....`，連線成功顯示 `WiFi connected`，每 60 秒更新一次，更新時顯示 `data updating....`。
+- 已使用 HUB-8735 Ultra 核心成功編譯；尚未燒錄至開發板。
+
 ## v0.10.0 — 2026-09-30
 
 - 新增 `09_oled_dht_led_beep`：整合溫溼度 OLED 顯示、異常 LED 狀態與 IO11 無源蜂鳴器警報；溫度高於 25°C 或濕度高於 80% 時播放 650～1250 Hz 升降警笛，兩者正常或 DHT11 讀取失敗時停止警報。

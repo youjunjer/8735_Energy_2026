@@ -97,14 +97,16 @@ upload success
 - `09_oled_dht_led_beep`：07 加上 IO11 警報；溫度或濕度任一異常時播放警笛，皆正常時停止。
 - `10_wifi_aqi_oled`：使用 Wi-Fi 與 ArduinoJson 取得環境部 AQI API，篩選桃園市中壢測站，每分鐘更新 OLED 上的 AQI 與 PM2.5；連線與更新狀態會顯示於 OLED。
 - `11_wifi_oled_aqi_dht`：整合 DHT11、三色 LED、IO11 蜂鳴器與 Wi-Fi AQI；OLED 每 5 秒輪播溫溼度及中壢 AQI／PM2.5。
+- `12_thingspeak`：保留 Wi-Fi／AQI／DHT11 顯示功能，並將溫度、濕度、AQI、PM2.5 上傳 ThingSpeak field1～field4，每 20 秒更新。
 
 目前最新使用程式是：
-`D:\115智慧節能\11_wifi_oled_aqi_dht\11_wifi_oled_aqi_dht.ino`
+`D:\115智慧節能\12_thingspeak\12_thingspeak.ino`
 
 ## 版本紀錄
 
 - v0.10.0：新增 `09_oled_dht_led_beep`，已編譯並於 COM3 成功燒錄。
 - v0.12.0：新增 `11_wifi_oled_aqi_dht`，整合 DHT11、三色 LED、IO11 蜂鳴器與 Wi-Fi AQI，已編譯並於 COM3 成功燒錄。
+- v0.13.0：新增 `12_thingspeak`，每 20 秒將溫度、濕度、AQI、PM2.5 上傳 ThingSpeak，已編譯並於 COM3 成功燒錄。
 - v0.11.1：修正 `10_wifi_aqi_oled` 的 HTTP chunked 回應解析，已編譯並於 COM3 成功燒錄。使用 Wi-Fi SSID `a`，每 60 秒抓取 API 並顯示桃園市中壢 AQI／PM2.5。
 - v0.11.0：新增 `10_wifi_aqi_oled`，已編譯成功；首次版本尚未燒錄。
 - v0.9.1：蜂鳴器由 IO18 改到 IO11，已編譯並於 COM3 成功燒錄。

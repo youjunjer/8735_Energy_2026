@@ -2,6 +2,12 @@
 
 本專案採用語意化版本號（SemVer）。每次程式更新會記錄版本號與變更摘要。
 
+## v0.13.0 — 2026-10-07
+
+- 新增 `12_thingspeak`：保留 Wi-Fi、DHT11、AQI／PM2.5 顯示與資料更新功能，並將溫度、濕度、AQI、PM2.5 上傳至 ThingSpeak 的 field1～field4。
+- ThingSpeak 每 20 秒上傳一次，上傳時 OLED 顯示 `data uploading...`。
+- 已編譯並於 HUB-8735 Ultra 的 COM3 成功燒錄。
+
 ## v0.12.0 — 2026-10-07
 
 - 新增 `11_wifi_oled_aqi_dht`：整合 `09_oled_dht_led_beep` 的 DHT11、三色 LED 與 IO11 蜂鳴器功能，以及 Wi-Fi／ArduinoJson 中壢 AQI 顯示功能。

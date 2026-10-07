@@ -2,6 +2,11 @@
 
 本專案採用語意化版本號（SemVer）。每次程式更新會記錄版本號與變更摘要。
 
+## v0.11.1 — 2026-10-07
+
+- 修正 `10_wifi_aqi_oled`：處理環境部 API 使用的 HTTP chunked 回應格式，讓 ArduinoJson 能正確解析 AQI 資料。
+- 修正版已編譯並於 HUB-8735 Ultra 的 COM3 成功燒錄。
+
 ## v0.11.0 — 2026-10-07
 
 - 新增 `10_wifi_aqi_oled`：使用 Wi-Fi 連線至環境部 AQI API，以 ArduinoJson 解析資料並篩選桃園市中壢測站。

@@ -103,7 +103,8 @@ upload success
 ## 版本紀錄
 
 - v0.10.0：新增 `09_oled_dht_led_beep`，已編譯並於 COM3 成功燒錄。
-- v0.11.0：新增 `10_wifi_aqi_oled`，已編譯成功；尚未燒錄。使用 Wi-Fi SSID `a`，每 60 秒抓取 API 並顯示桃園市中壢 AQI／PM2.5。
+- v0.11.1：修正 `10_wifi_aqi_oled` 的 HTTP chunked 回應解析，已編譯並於 COM3 成功燒錄。使用 Wi-Fi SSID `a`，每 60 秒抓取 API 並顯示桃園市中壢 AQI／PM2.5。
+- v0.11.0：新增 `10_wifi_aqi_oled`，已編譯成功；首次版本尚未燒錄。
 - v0.9.1：蜂鳴器由 IO18 改到 IO11，已編譯並於 COM3 成功燒錄。
 - v0.9.0：新增 `08_beep`；原 IO18 版本實測無聲。
 - v0.8.0：新增 `07_oled_dht_led`。

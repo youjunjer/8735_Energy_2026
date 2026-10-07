@@ -87,9 +87,10 @@ void connectWiFi() {
   delay(1500);
 }
 
-bool skipHttpHeaders(WiFiSSLClient& client) {
+bool skipHttpHeaders(WiFiSSLClient& client, bool& isChunked) {
   String line;
   unsigned long startMs = millis();
+  isChunked = false;
 
   while (millis() - startMs < 15000UL) {
     while (client.available()) {
@@ -97,6 +98,9 @@ bool skipHttpHeaders(WiFiSSLClient& client) {
       if (c == '\n') {
         if (line.length() == 0 || line == "\r") {
           return true;
+        }
+        if (line.indexOf("Transfer-Encoding: chunked") >= 0) {
+          isChunked = true;
         }
         line = "";
       } else if (c != '\r') {
@@ -111,6 +115,76 @@ bool skipHttpHeaders(WiFiSSLClient& client) {
   }
 
   return false;
+}
+
+bool readHttpLine(WiFiSSLClient& client, String& line) {
+  line = "";
+  unsigned long startMs = millis();
+
+  while (millis() - startMs < 15000UL) {
+    while (client.available()) {
+      char c = static_cast<char>(client.read());
+      if (c == '\n') return true;
+      if (c != '\r') line += c;
+    }
+    if (!client.connected() && !client.available()) return line.length() > 0;
+    delay(1);
+  }
+  return false;
+}
+
+bool readResponseBody(WiFiSSLClient& client, bool isChunked, String& body) {
+  body = "";
+
+  if (!isChunked) {
+    unsigned long startMs = millis();
+    while (millis() - startMs < 20000UL) {
+      while (client.available()) {
+        body += static_cast<char>(client.read());
+        startMs = millis();
+      }
+      if (!client.connected() && !client.available()) return true;
+      delay(1);
+    }
+    return false;
+  }
+
+  // The API currently uses HTTP/1.1 Transfer-Encoding: chunked.
+  // Remove each hexadecimal chunk-size line before JSON parsing.
+  String sizeLine;
+  while (true) {
+    if (!readHttpLine(client, sizeLine)) return false;
+    int separator = sizeLine.indexOf(';');
+    if (separator >= 0) sizeLine = sizeLine.substring(0, separator);
+    unsigned long chunkSize = strtoul(sizeLine.c_str(), nullptr, 16);
+
+    if (chunkSize == 0) {
+      // Consume optional trailing headers.
+      do {
+        if (!readHttpLine(client, sizeLine)) return false;
+      } while (sizeLine.length() > 0);
+      return true;
+    }
+
+    unsigned long remaining = chunkSize;
+    while (remaining > 0) {
+      while (!client.available()) {
+        if (!client.connected()) return false;
+        delay(1);
+      }
+      size_t toRead = remaining > 256UL ? 256U : static_cast<size_t>(remaining);
+      uint8_t buffer[256];
+      int count = client.read(buffer, toRead);
+      if (count <= 0) return false;
+      for (int i = 0; i < count; ++i) {
+        body += static_cast<char>(buffer[i]);
+      }
+      remaining -= static_cast<unsigned long>(count);
+    }
+
+    // Every chunk is followed by CRLF.
+    if (!readHttpLine(client, sizeLine) || sizeLine.length() != 0) return false;
+  }
 }
 
 bool fetchZhongliAirQuality() {
@@ -131,7 +205,14 @@ bool fetchZhongliAirQuality() {
   httpsClient.println("Connection: close");
   httpsClient.println();
 
-  if (!skipHttpHeaders(httpsClient)) {
+  bool isChunked = false;
+  if (!skipHttpHeaders(httpsClient, isChunked)) {
+    httpsClient.stop();
+    return false;
+  }
+
+  String responseBody;
+  if (!readResponseBody(httpsClient, isChunked, responseBody)) {
     httpsClient.stop();
     return false;
   }
@@ -148,7 +229,7 @@ bool fetchZhongliAirQuality() {
   JsonDocument document;
   DeserializationError error = deserializeJson(
     document,
-    httpsClient,
+    responseBody,
     DeserializationOption::Filter(filter)
   );
   httpsClient.stop();

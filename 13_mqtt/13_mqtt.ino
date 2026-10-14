@@ -5,7 +5,7 @@
   OLED       -> SSD1306 128x64, I2C address 0x3C
   MQTT       -> mqttgo.io:1883
   Topic      -> eric/class105/data
-  Payload    -> {"temp":25,"humi":72}
+  Payload    -> {"temp":25,"humi":65,"light":92}
 
   The OLED shows Wi-Fi/MQTT connection and publish status.
   One temperature/humidity payload is published every 15 seconds.
@@ -25,6 +25,7 @@ const uint16_t MQTT_PORT = 1883;
 const char MQTT_TOPIC[] = "eric/class105/data";
 
 const uint8_t DHT_PIN = 20;
+const uint8_t LIGHT_PIN = 0;
 const unsigned long SENSOR_INTERVAL_MS = 2000UL;
 const unsigned long PUBLISH_INTERVAL_MS = 15000UL;
 const unsigned long WIFI_RETRY_INTERVAL_MS = 5000UL;
@@ -43,6 +44,7 @@ unsigned long lastWiFiRetryMs = 0;
 unsigned long lastMqttRetryMs = 0;
 float temperature = NAN;
 float humidity = NAN;
+int lightPercent = 0;
 bool hasSensorData = false;
 String lastStatus = "Starting...";
 
@@ -58,21 +60,31 @@ void drawDataPage() {
   u8g2.clearBuffer();
   u8g2.setFont(u8g2_font_6x10_tf);
   u8g2.drawStr(0, 10, "MQTT SENSOR DATA");
-  u8g2.setFont(u8g2_font_ncenB12_tr);
-  u8g2.setCursor(0, 34);
+  u8g2.setFont(u8g2_font_6x12_tf);
+  u8g2.setCursor(0, 27);
   u8g2.print("T: ");
   if (hasSensorData) u8g2.print(temperature, 0);
   else u8g2.print("--");
   u8g2.print(" C");
-  u8g2.setCursor(0, 57);
+  u8g2.setCursor(0, 43);
   u8g2.print("H: ");
   if (hasSensorData) u8g2.print(humidity, 0);
   else u8g2.print("--");
+  u8g2.print(" %");
+  u8g2.setCursor(0, 59);
+  u8g2.print("L: ");
+  u8g2.print(lightPercent);
   u8g2.print(" %");
   u8g2.sendBuffer();
 }
 
 void readSensor() {
+  // This board's light sensor is wired so lower ADC values mean brighter light.
+  // Convert to the requested scale: 0% = darkest, 100% = brightest.
+  int lightRaw = analogRead(LIGHT_PIN);
+  lightPercent = ((1024L - lightRaw) * 100L) / 1024L;
+  lightPercent = constrain(lightPercent, 0, 100);
+
   float newTemperature = dht.readTemperature();
   float newHumidity = dht.readHumidity();
   if (isnan(newTemperature) || isnan(newHumidity)) {
@@ -122,10 +134,11 @@ bool connectMqtt() {
 bool publishSensorData() {
   if (!hasSensorData || !mqttClient.connected()) return false;
 
-  char payload[64];
+  char payload[80];
   int temp = static_cast<int>(temperature + 0.5f);
   int humi = static_cast<int>(humidity + 0.5f);
-  snprintf(payload, sizeof(payload), "{\"temp\":%d,\"humi\":%d}", temp, humi);
+  snprintf(payload, sizeof(payload), "{\"temp\":%d,\"humi\":%d,\"light\":%d}",
+           temp, humi, lightPercent);
 
   drawStatus("data publishing...", payload);
   bool published = mqttClient.publish(MQTT_TOPIC, payload);
@@ -143,6 +156,7 @@ bool publishSensorData() {
 
 void setup() {
   dht.begin();
+  pinMode(LIGHT_PIN, INPUT);
   u8g2.setI2CAddress(0x3C * 2);
   u8g2.begin();
   // Ameba MQTT examples use non-blocking TCP mode so reconnects do not

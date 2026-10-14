@@ -105,6 +105,7 @@ upload success
 
 目前狀態：
 - `13_mqtt` 已改用 `wifiClient.setNonBlockingMode()`，MQTT 重連不會阻塞主迴圈。
+- 光敏電阻接在 IO0，亮度以 0–100% 表示（0 最暗、100 最亮），並以 `light` 欄位發布。
 - 已使用 Wi-Fi `a`、MQTT Broker `mqttgo.io:1883`、Topic `eric/class105/data` 測試，OLED 連線流程正常。
 - 已於 2026-10-14 編譯並成功燒錄至 HUB-8735 Ultra 的 COM4；目前功能確認正常，後續可直接沿用此版本。
 
@@ -117,6 +118,7 @@ upload success
 - v0.14.1：`13_mqtt` 改用每次開機產生的隨機 Client ID，已編譯並於 COM4 成功燒錄。
 - v0.14.2：`13_mqtt` 加入 MQTT DNS／狀態碼診斷、keep-alive 及重連前 TCP 清理，已編譯並於 COM4 成功燒錄；目前需依 OLED 顯示的診斷訊息確認板端連線原因。
 - v0.14.3：`13_mqtt` 依照 Ameba `MQTT_Basic`／非阻塞重連模式加入 `wifiClient.setNonBlockingMode()`，已編譯並於 COM4 成功燒錄。
+- v0.15.0：`13_mqtt` 新增 IO0 光敏電阻亮度 0–100% 換算，MQTT payload 加入 `light` 欄位，OLED 顯示亮度；已編譯並於 COM4 成功燒錄。
 - v0.11.1：修正 `10_wifi_aqi_oled` 的 HTTP chunked 回應解析，已編譯並於 COM3 成功燒錄。使用 Wi-Fi SSID `a`，每 60 秒抓取 API 並顯示桃園市中壢 AQI／PM2.5。
 - v0.11.0：新增 `10_wifi_aqi_oled`，已編譯成功；首次版本尚未燒錄。
 - v0.9.1：蜂鳴器由 IO18 改到 IO11，已編譯並於 COM3 成功燒錄。

@@ -2,6 +2,12 @@
 
 本專案採用語意化版本號（SemVer）。每次程式更新會記錄版本號與變更摘要。
 
+## v0.15.0 — 2026-10-14
+
+- `13_mqtt` 新增 IO0 光敏電阻讀值，轉換為 0–100% 亮度（0 最暗、100 最亮）。
+- MQTT payload 新增 `light` 欄位，格式為 `{"temp":25,"humi":65,"light":92}`。
+- OLED 資料頁新增亮度百分比顯示；已編譯並於 HUB-8735 Ultra 的 COM4 成功燒錄。
+
 ## v0.14.3 — 2026-10-14
 
 - `13_mqtt` 依照 Ameba MQTT 範例啟用 `wifiClient.setNonBlockingMode()`，避免 MQTT 重連時阻塞主迴圈。

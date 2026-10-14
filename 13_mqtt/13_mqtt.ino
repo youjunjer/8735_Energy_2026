@@ -23,7 +23,6 @@ const char WIFI_PASSWORD[] = "12345678";
 const char MQTT_SERVER[] = "mqttgo.io";
 const uint16_t MQTT_PORT = 1883;
 const char MQTT_TOPIC[] = "eric/class105/data";
-const char MQTT_CLIENT_ID[] = "HUB8735_eric_class105";
 
 const uint8_t DHT_PIN = 20;
 const unsigned long SENSOR_INTERVAL_MS = 2000UL;
@@ -35,6 +34,7 @@ DHT dht(DHT_PIN, DHT11);
 U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, U8X8_PIN_NONE);
 WiFiClient wifiClient;
 PubSubClient mqttClient(wifiClient);
+char mqttClientId[32];
 
 unsigned long lastSensorReadMs = 0;
 unsigned long lastPublishMs = 0;
@@ -95,7 +95,7 @@ void connectWiFi() {
 bool connectMqtt() {
   if (mqttClient.connected()) return true;
   drawStatus("MQTT connecting...", MQTT_SERVER);
-  bool connected = mqttClient.connect(MQTT_CLIENT_ID);
+  bool connected = mqttClient.connect(mqttClientId);
   if (connected) {
     drawStatus("MQTT connected", MQTT_TOPIC);
     lastStatus = "MQTT connected";
@@ -134,6 +134,9 @@ void setup() {
   u8g2.setI2CAddress(0x3C * 2);
   u8g2.begin();
   mqttClient.setServer(MQTT_SERVER, MQTT_PORT);
+  randomSeed(static_cast<unsigned long>(micros()) ^ static_cast<unsigned long>(millis()));
+  unsigned long randomId = random(100000UL, 1000000UL);
+  snprintf(mqttClientId, sizeof(mqttClientId), "HUB8735_%lu", randomId);
   drawStatus("WiFi connecting...");
   connectWiFi();
 }

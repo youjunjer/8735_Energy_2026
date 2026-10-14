@@ -2,6 +2,11 @@
 
 本專案採用語意化版本號（SemVer）。每次程式更新會記錄版本號與變更摘要。
 
+## v0.14.1 — 2026-10-14
+
+- 修正 `13_mqtt`：Client ID 改為每次開機時產生六位數隨機碼，避免與其他 MQTT 用戶端重複。
+- 已編譯並於 HUB-8735 Ultra 的 COM4 成功燒錄。
+
 ## v0.14.0 — 2026-10-14
 
 - 新增 `13_mqtt`：使用 HUB-8735 Ultra 的 PubSubClient 連線至 `mqttgo.io:1883`，發布 DHT11 溫度／濕度 JSON 資料至 `eric/class105/data`。

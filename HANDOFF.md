@@ -109,6 +109,7 @@ upload success
 - v0.12.0：新增 `11_wifi_oled_aqi_dht`，整合 DHT11、三色 LED、IO11 蜂鳴器與 Wi-Fi AQI，已編譯並於 COM3 成功燒錄。
 - v0.13.0：新增 `12_thingspeak`，每 20 秒將溫度、濕度、AQI、PM2.5 上傳 ThingSpeak，已編譯並於 COM3 成功燒錄。
 - v0.14.0：新增 `13_mqtt`，每 15 秒以 MQTT 發布 DHT11 溫溼度 JSON；已編譯成功，尚未燒錄。
+- v0.14.1：`13_mqtt` 改用每次開機產生的隨機 Client ID，已編譯並於 COM4 成功燒錄。
 - v0.11.1：修正 `10_wifi_aqi_oled` 的 HTTP chunked 回應解析，已編譯並於 COM3 成功燒錄。使用 Wi-Fi SSID `a`，每 60 秒抓取 API 並顯示桃園市中壢 AQI／PM2.5。
 - v0.11.0：新增 `10_wifi_aqi_oled`，已編譯成功；首次版本尚未燒錄。
 - v0.9.1：蜂鳴器由 IO18 改到 IO11，已編譯並於 COM3 成功燒錄。

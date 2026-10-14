@@ -103,6 +103,11 @@ upload success
 目前最新使用程式是：
 `D:\115智慧節能\13_mqtt\13_mqtt.ino`
 
+目前狀態：
+- `13_mqtt` 已改用 `wifiClient.setNonBlockingMode()`，MQTT 重連不會阻塞主迴圈。
+- 已使用 Wi-Fi `a`、MQTT Broker `mqttgo.io:1883`、Topic `eric/class105/data` 測試，OLED 連線流程正常。
+- 已於 2026-10-14 編譯並成功燒錄至 HUB-8735 Ultra 的 COM4；目前功能確認正常，後續可直接沿用此版本。
+
 ## 版本紀錄
 
 - v0.10.0：新增 `09_oled_dht_led_beep`，已編譯並於 COM3 成功燒錄。

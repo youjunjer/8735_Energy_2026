@@ -2,6 +2,11 @@
 
 本專案採用語意化版本號（SemVer）。每次程式更新會記錄版本號與變更摘要。
 
+## v0.14.3 — 2026-10-14
+
+- `13_mqtt` 依照 Ameba MQTT 範例啟用 `wifiClient.setNonBlockingMode()`，避免 MQTT 重連時阻塞主迴圈。
+- 已編譯並於 HUB-8735 Ultra 的 COM4 成功燒錄。
+
 ## v0.14.2 — 2026-10-14
 
 - 強化 `13_mqtt` 連線診斷：先解析 `mqttgo.io` 的 IP，並在 OLED 顯示 DNS 失敗或 PubSubClient 狀態碼。

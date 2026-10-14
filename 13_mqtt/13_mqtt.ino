@@ -145,6 +145,9 @@ void setup() {
   dht.begin();
   u8g2.setI2CAddress(0x3C * 2);
   u8g2.begin();
+  // Ameba MQTT examples use non-blocking TCP mode so reconnects do not
+  // hold the main loop while the broker is unreachable.
+  wifiClient.setNonBlockingMode();
   mqttClient.setServer(MQTT_SERVER, MQTT_PORT);
   mqttClient.setKeepAlive(30);
   randomSeed(static_cast<unsigned long>(micros()) ^ static_cast<unsigned long>(millis()));

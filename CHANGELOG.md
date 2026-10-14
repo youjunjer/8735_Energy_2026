@@ -2,6 +2,12 @@
 
 本專案採用語意化版本號（SemVer）。每次程式更新會記錄版本號與變更摘要。
 
+## v0.14.2 — 2026-10-14
+
+- 強化 `13_mqtt` 連線診斷：先解析 `mqttgo.io` 的 IP，並在 OLED 顯示 DNS 失敗或 PubSubClient 狀態碼。
+- 設定 MQTT keep-alive 為 30 秒，重連前清除舊 TCP 連線。
+- 已編譯並於 HUB-8735 Ultra 的 COM4 成功燒錄。
+
 ## v0.14.1 — 2026-10-14
 
 - 修正 `13_mqtt`：Client ID 改為每次開機時產生六位數隨機碼，避免與其他 MQTT 用戶端重複。

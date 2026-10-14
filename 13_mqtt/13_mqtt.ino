@@ -35,6 +35,7 @@ U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, U8X8_PIN_NONE);
 WiFiClient wifiClient;
 PubSubClient mqttClient(wifiClient);
 char mqttClientId[32];
+IPAddress mqttBrokerIp;
 
 unsigned long lastSensorReadMs = 0;
 unsigned long lastPublishMs = 0;
@@ -95,13 +96,24 @@ void connectWiFi() {
 bool connectMqtt() {
   if (mqttClient.connected()) return true;
   drawStatus("MQTT connecting...", MQTT_SERVER);
+
+  if (WiFi.hostByName(MQTT_SERVER, mqttBrokerIp) != 1) {
+    drawStatus("MQTT DNS fail", MQTT_SERVER);
+    lastStatus = "MQTT DNS fail";
+    return false;
+  }
+
+  mqttClient.setServer(mqttBrokerIp, MQTT_PORT);
+  wifiClient.stop();
   bool connected = mqttClient.connect(mqttClientId);
   if (connected) {
     drawStatus("MQTT connected", MQTT_TOPIC);
     lastStatus = "MQTT connected";
     delay(1000);
   } else {
-    drawStatus("MQTT connect fail", "Retrying...");
+    char stateText[24];
+    snprintf(stateText, sizeof(stateText), "state: %d", mqttClient.state());
+    drawStatus("MQTT connect fail", stateText);
     lastStatus = "MQTT connect fail";
   }
   return connected;
@@ -134,6 +146,7 @@ void setup() {
   u8g2.setI2CAddress(0x3C * 2);
   u8g2.begin();
   mqttClient.setServer(MQTT_SERVER, MQTT_PORT);
+  mqttClient.setKeepAlive(30);
   randomSeed(static_cast<unsigned long>(micros()) ^ static_cast<unsigned long>(millis()));
   unsigned long randomId = random(100000UL, 1000000UL);
   snprintf(mqttClientId, sizeof(mqttClientId), "HUB8735_%lu", randomId);

@@ -2,6 +2,12 @@
 
 本專案採用語意化版本號（SemVer）。每次程式更新會記錄版本號與變更摘要。
 
+## v0.14.0 — 2026-10-14
+
+- 新增 `13_mqtt`：使用 HUB-8735 Ultra 的 PubSubClient 連線至 `mqttgo.io:1883`，發布 DHT11 溫度／濕度 JSON 資料至 `eric/class105/data`。
+- 每 15 秒發布一筆資料；OLED 顯示 Wi-Fi、MQTT 連線、發布中、成功與失敗狀態。
+- 已使用 HUB-8735 Ultra 核心成功編譯；尚未燒錄至開發板。
+
 ## v0.13.0 — 2026-10-07
 
 - 新增 `12_thingspeak`：保留 Wi-Fi、DHT11、AQI／PM2.5 顯示與資料更新功能，並將溫度、濕度、AQI、PM2.5 上傳至 ThingSpeak 的 field1～field4。

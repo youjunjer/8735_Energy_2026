@@ -2,6 +2,12 @@
 
 本專案採用語意化版本號（SemVer）。每次程式更新會記錄版本號與變更摘要。
 
+## v0.17.0 — 2026-10-21
+
+- 新增 `15_face`：以 Wi-Fi 網頁介面取代序列埠操作人臉辨識。
+- 網頁按鈕支援登錄、刪除、清除、備份與還原人臉資料。
+- 保留 RTSP H.264 串流、SCRFD／MobileFaceNet 辨識、OSD 框線與 OLED 網路資訊顯示。
+
 ## v0.16.0 — 2026-10-21
 
 - 新增 `14_rtsp`：依 HUB-8735 Ultra `StreamRTSP/SingleVideoWithAudio` 範例建立 RTSP 影像串流。

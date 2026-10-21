@@ -109,6 +109,18 @@ upload success
 - 已使用 Wi-Fi `a`、MQTT Broker `mqttgo.io:1883`、Topic `eric/class105/data` 測試，OLED 連線流程正常。
 - 已於 2026-10-14 編譯並成功燒錄至 HUB-8735 Ultra 的 COM4；目前功能確認正常，後續可直接沿用此版本。
 
+## 2026-10-21 對話交接摘要
+
+- 使用者要求將本對話內容寫入交接紀錄，供後續 AI 接手。
+- 目前主要程式為 `13_mqtt/13_mqtt.ino`，板型為 `ideasHatch:AmebaPro2:Ameba_HUB-8735_ultra`，最近使用連接埠為 COM4。
+- Wi-Fi：SSID `a`；MQTT Broker：`mqttgo.io:1883`；Topic：`eric/class105/data`；每 15 秒發布一筆 DHT11 與光敏資料。
+- DHT11 接 IO20；光敏電阻接 IO0。光敏 ADC 依目前硬體接法換算為 0–100%：0 為最暗、100 為最亮。
+- MQTT payload 格式：`{"temp":25,"humi":65,"light":92}`。OLED 資料頁顯示溫度、濕度及亮度，連線與發布狀態也會顯示。
+- MQTT Client ID 每次開機產生隨機六位數字；已啟用 `wifiClient.setNonBlockingMode()`，避免 Broker 連線問題阻塞主迴圈。
+- 先前曾遇到 `MQTT connect fail`，診斷狀態為 `-4`；加入 DNS、狀態碼、keep-alive、TCP 清理及非阻塞 socket 後，使用者確認目前已無問題。
+- 最近一次已完成編譯及 COM4 燒錄，版本 `v0.15.0`；最近一次程式提交為 `7affa2c`。
+- 後續若修改程式，請同步更新 `CHANGELOG.md`、增加版本號、更新本交接紀錄，並依使用者既有要求 commit、push 至 `origin main`。不要將 `成果照片` 內未追蹤照片加入提交。
+
 ## 版本紀錄
 
 - v0.10.0：新增 `09_oled_dht_led_beep`，已編譯並於 COM3 成功燒錄。

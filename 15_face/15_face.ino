@@ -21,17 +21,25 @@
 #include "U8g2lib.h"
 
 #define CHANNEL       0
+#define CHANNEL_JPEG  1
 #define CHANNEL_NN    3
 #define NN_WIDTH      576
 #define NN_HEIGHT     320
 
 VideoSetting videoConfig(VIDEO_FHD, 30, VIDEO_H264, 0);
+VideoSetting jpegConfig(640, 360, CAM_FPS, VIDEO_JPEG, 1);
 VideoSetting nnConfig(NN_WIDTH, NN_HEIGHT, 10, VIDEO_RGB, 0);
 NNFaceDetectionRecognition faceRecognition;
 RTSP rtsp;
 StreamIO videoStreamer(1, 1);
 StreamIO videoStreamerRGB(1, 1);
 WiFiServer webServer(80);
+WiFiServer mjpegServer(8080);
+WiFiClient mjpegClient;
+bool mjpegStreaming = false;
+uint32_t jpegImageAddress = 0;
+uint32_t jpegImageLength = 0;
+unsigned long lastMjpegFrameMs = 0;
 
 char ssid[] = "a";
 char pass[] = "12345678";
@@ -135,6 +143,9 @@ void printWebPage(WiFiClient &client) {
     client.println(F("<!doctype html><html><head><meta name='viewport' content='width=device-width,initial-scale=1'>"));
     client.println(F("<title>8735 Face Control</title><style>body{font-family:Arial;max-width:620px;margin:20px auto;padding:0 12px}button{padding:12px;margin:5px;font-size:16px}input{padding:12px;font-size:16px;width:55%}.card{border:1px solid #ccc;border-radius:8px;padding:12px;margin:12px 0}small{color:#555}</style></head><body>"));
     client.println(F("<h2>HUB-8735 人臉辨識控制</h2>"));
+    client.println(F("<div class='card'><h3>即時影像預覽</h3><img style='width:100%;max-width:640px' src='http://"));
+    client.print(boardIp);
+    client.println(F(":8080/stream' alt='MJPEG preview'></div>"));
     client.print(F("<div class='card'><b>網頁：</b>http://"));
     client.print(boardIp);
     client.println(F("/<br><b>RTSP：</b>rtsp://"));
@@ -152,6 +163,71 @@ void printWebPage(WiFiClient &client) {
     client.print(F("<br><b>最近操作：</b>"));
     client.print(lastOperation);
     client.println(F("<br><br><a href='/'><button>重新整理</button></a></div></body></html>"));
+}
+
+void startMjpegClient() {
+    if (mjpegStreaming) return;
+    WiFiClient candidate = mjpegServer.available();
+    if (!candidate) return;
+
+    candidate.setTimeout(500);
+    String line;
+    bool blankLine = false;
+    unsigned long deadline = millis() + 1000;
+    while (candidate.connected() && (long)(deadline - millis()) > 0) {
+        if (!candidate.available()) {
+            delay(1);
+            continue;
+        }
+        char c = candidate.read();
+        deadline = millis() + 1000;
+        if (c == '\n') {
+            if (line.length() == 0) {
+                blankLine = true;
+                break;
+            }
+            line = "";
+        } else if (c != '\r') {
+            line += c;
+        }
+    }
+
+    if (!blankLine) {
+        candidate.stop();
+        return;
+    }
+
+    candidate.print(F("HTTP/1.1 200 OK\r\n"));
+    candidate.print(F("Content-Type: multipart/x-mixed-replace; boundary=8735frame\r\n"));
+    candidate.print(F("Cache-Control: no-cache\r\nConnection: close\r\n\r\n"));
+    mjpegClient = candidate;
+    mjpegStreaming = true;
+    lastMjpegFrameMs = 0;
+}
+
+void sendMjpegFrame() {
+    if (!mjpegStreaming) return;
+    if (!mjpegClient.connected()) {
+        mjpegClient.stop();
+        mjpegStreaming = false;
+        return;
+    }
+
+    // Limit preview to about 10 FPS so the control page remains responsive.
+    if ((unsigned long)(millis() - lastMjpegFrameMs) < 100) return;
+    lastMjpegFrameMs = millis();
+
+    Camera.getImage(CHANNEL_JPEG, &jpegImageAddress, &jpegImageLength);
+    if (jpegImageAddress == 0 || jpegImageLength == 0) return;
+
+    char header[128];
+    int headerLength = snprintf(
+        header, sizeof(header),
+        "--8735frame\r\nContent-Type: image/jpeg\r\nContent-Length: %lu\r\n\r\n",
+        static_cast<unsigned long>(jpegImageLength));
+    mjpegClient.write(reinterpret_cast<const uint8_t *>(header), headerLength);
+    mjpegClient.write(reinterpret_cast<const uint8_t *>(jpegImageAddress), jpegImageLength);
+    mjpegClient.print(F("\r\n"));
 }
 
 void handleWebClient() {
@@ -242,6 +318,7 @@ void setup() {
 
     videoConfig.setBitrate(2 * 1024 * 1024);
     Camera.configVideoChannel(CHANNEL, videoConfig);
+    Camera.configVideoChannel(CHANNEL_JPEG, jpegConfig);
     Camera.configVideoChannel(CHANNEL_NN, nnConfig);
     Camera.videoInit();
 
@@ -259,6 +336,7 @@ void setup() {
     videoStreamer.registerOutput(rtsp);
     videoStreamer.begin();
     Camera.channelBegin(CHANNEL);
+    Camera.channelBegin(CHANNEL_JPEG);
 
     videoStreamerRGB.registerInput(Camera.getStream(CHANNEL_NN));
     videoStreamerRGB.setStackSize();
@@ -270,6 +348,7 @@ void setup() {
     OSD.configVideo(CHANNEL, videoConfig);
     OSD.begin();
     webServer.begin();
+    mjpegServer.begin();
     drawNetworkInfo();
 
     Serial.print("Web control: http://");
@@ -283,5 +362,7 @@ void setup() {
 
 void loop() {
     handleWebClient();
+    startMjpegClient();
+    sendMjpegFrame();
     delay(10);
 }

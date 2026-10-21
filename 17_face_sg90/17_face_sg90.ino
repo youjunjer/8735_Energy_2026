@@ -202,7 +202,10 @@ void connectWiFi() {
 void FRPostProcess(std::vector<FaceRecognitionResult> results) {
     uint16_t imageHeight = videoConfig.height();
     uint16_t imageWidth = videoConfig.width();
-    lastFaceCount = faceRecognition.getResultCount();
+    // Use the callback payload itself as the authoritative result count.
+    // This avoids relying on the NN module's internal count during callback
+    // timing and keeps the LEDs/servo synchronized with the actual results.
+    lastFaceCount = static_cast<uint16_t>(results.size());
     lastFaceName = "none";
     bool known = false;
     OSD.createBitmap(CHANNEL);

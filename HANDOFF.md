@@ -152,6 +152,7 @@ RTSP 測試程式為：
 - v0.20.0：新增 `17_face_sg90`，整合人臉辨識、RTSP／MJPEG／網頁控制與 IO21 SG90 觸發；已編譯成功並燒錄至 COM4，Arduino CLI 回報 `upload success`。
 - v0.20.1：`17_face_sg90` 移除 MJPEG 預覽功能，保留 RTSP、網頁控制、人臉辨識與 SG90；已編譯成功並燒錄至 COM4，Arduino CLI 回報 `upload success`。
 - v0.20.2：`17_face_sg90` 新增綠／紅／黃三色 LED 辨識狀態控制；已編譯成功並燒錄至 COM4，Arduino CLI 回報 `upload success`。
+- v0.20.3：燈號判定改用人臉辨識回呼的 `results.size()`，避免函式庫內部計數同步時序導致辨識結果未反映到燈號；已編譯成功並燒錄至 COM4，Arduino CLI 回報 `upload success`。
 - v0.11.1：修正 `10_wifi_aqi_oled` 的 HTTP chunked 回應解析，已編譯並於 COM3 成功燒錄。使用 Wi-Fi SSID `a`，每 60 秒抓取 API 並顯示桃園市中壢 AQI／PM2.5。
 - v0.11.0：新增 `10_wifi_aqi_oled`，已編譯成功；首次版本尚未燒錄。
 - v0.9.1：蜂鳴器由 IO18 改到 IO11，已編譯並於 COM3 成功燒錄。

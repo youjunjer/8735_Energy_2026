@@ -105,6 +105,7 @@ upload success
 - `15_face`：目前網頁 MJPEG 預覽已調整為 480×270、約 8 FPS；HD H.264 RTSP 串流維持不變。
 - `16_sg90`：使用 `AmebaServo` 控制接在 IO21 的 SG90，依序 0°→90°→180°→0°，各角度 1 秒，回到 0° 後停 5 秒。
 - `17_face_sg90`：整合 `15_face` 與 SG90；有已註冊人臉時 IO21 轉 90°、停 5 秒後回 0°，只有 unknown 時不動作。
+- `17_face_sg90`：已移除不穩定的 MJPEG 預覽與 port 8080，只保留 HD H.264 RTSP 與 port 80 網頁控制。
 
 目前最新使用程式是：
 `D:\115智慧節能\15_face\15_face.ino`
@@ -148,6 +149,7 @@ RTSP 測試程式為：
 - v0.18.1：`15_face` 網頁 MJPEG 預覽改為 480×270、約 8 FPS，以改善網頁反應速度；已編譯成功並燒錄至 COM4，Arduino CLI 回報 `upload success`。
 - v0.19.0：新增 `16_sg90` SG90 伺服馬達測試程式，使用 IO21；已編譯成功並燒錄至 COM4，Arduino CLI 回報 `upload success`。
 - v0.20.0：新增 `17_face_sg90`，整合人臉辨識、RTSP／MJPEG／網頁控制與 IO21 SG90 觸發；已編譯成功並燒錄至 COM4，Arduino CLI 回報 `upload success`。
+- v0.20.1：`17_face_sg90` 移除 MJPEG 預覽功能，保留 RTSP、網頁控制、人臉辨識與 SG90；已編譯成功並燒錄至 COM4，Arduino CLI 回報 `upload success`。
 - v0.11.1：修正 `10_wifi_aqi_oled` 的 HTTP chunked 回應解析，已編譯並於 COM3 成功燒錄。使用 Wi-Fi SSID `a`，每 60 秒抓取 API 並顯示桃園市中壢 AQI／PM2.5。
 - v0.11.0：新增 `10_wifi_aqi_oled`，已編譯成功；首次版本尚未燒錄。
 - v0.9.1：蜂鳴器由 IO18 改到 IO11，已編譯並於 COM3 成功燒錄。

@@ -2,6 +2,12 @@
 
 本專案採用語意化版本號（SemVer）。每次程式更新會記錄版本號與變更摘要。
 
+## v0.16.0 — 2026-10-21
+
+- 新增 `14_rtsp`：依 HUB-8735 Ultra `StreamRTSP/SingleVideoWithAudio` 範例建立 RTSP 影像串流。
+- 使用 HD 1280×720 H.264 影像與 16 kHz AAC 聲音，透過 Wi-Fi 傳輸。
+- OLED 顯示 Wi-Fi 連線過程、開發板 IP 與 RTSP 連接埠。
+
 ## v0.15.0 — 2026-10-14
 
 - `13_mqtt` 新增 IO0 光敏電阻讀值，轉換為 0–100% 亮度（0 最暗、100 最亮）。

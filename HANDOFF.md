@@ -139,7 +139,7 @@ RTSP 測試程式為：
 - v0.14.3：`13_mqtt` 依照 Ameba `MQTT_Basic`／非阻塞重連模式加入 `wifiClient.setNonBlockingMode()`，已編譯並於 COM4 成功燒錄。
 - v0.15.0：`13_mqtt` 新增 IO0 光敏電阻亮度 0–100% 換算，MQTT payload 加入 `light` 欄位，OLED 顯示亮度；已編譯並於 COM4 成功燒錄。
 - v0.16.0：新增 `14_rtsp`，提供 HD H.264 + AAC 音訊 RTSP 串流，OLED 顯示連線狀態、IP 與 RTSP 連接埠；待硬體驗證。
-- v0.17.0：新增 `15_face`，以 port 80 Wi-Fi 網頁按鈕取代人臉辨識序列埠指令；已於 2026-10-21 編譯成功並燒錄至 COM4，Arduino CLI 回報 `upload success`。
+- v0.17.0：新增 `15_face`，以 port 80 Wi-Fi 網頁按鈕取代人臉辨識序列埠指令；原始版本已於 2026-10-21 編譯成功並燒錄至 COM4。後續修正版已完成編譯，改善 HTTP 請求讀取與回應關閉時機，但目前因 COM4 `Uart boot fail` 尚待重新上電後再燒錄。
 - v0.11.1：修正 `10_wifi_aqi_oled` 的 HTTP chunked 回應解析，已編譯並於 COM3 成功燒錄。使用 Wi-Fi SSID `a`，每 60 秒抓取 API 並顯示桃園市中壢 AQI／PM2.5。
 - v0.11.0：新增 `10_wifi_aqi_oled`，已編譯成功；首次版本尚未燒錄。
 - v0.9.1：蜂鳴器由 IO18 改到 IO11，已編譯並於 COM3 成功燒錄。

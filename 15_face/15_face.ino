@@ -158,14 +158,44 @@ void handleWebClient() {
     WiFiClient client = webServer.available();
     if (!client) return;
 
-    client.setTimeout(500);
-    String request = client.readStringUntil('\r');
-    handleAction(request);
-    while (client.connected() && client.available()) {
-        client.read();
+    String request;
+    bool firstLine = true;
+    bool currentLineIsBlank = true;
+    unsigned long deadline = millis() + 2000;
+
+    // Follow the Ameba WiFiServer example: wait for the HTTP blank line
+    // before sending the response, because browser headers may arrive in
+    // multiple TCP packets.
+    while (client.connected() && (long)(deadline - millis()) > 0) {
+        if (!client.available()) {
+            delay(1);
+            continue;
+        }
+        char c = client.read();
+        deadline = millis() + 2000;
+        if (firstLine) {
+            if (c == '\r') {
+                firstLine = false;
+            } else {
+                request += c;
+            }
+        }
+        if (c == '\n' && currentLineIsBlank) {
+            break;
+        }
+        if (c == '\n') {
+            currentLineIsBlank = true;
+        } else if (c != '\r') {
+            currentLineIsBlank = false;
+        }
     }
+
+    handleAction(request);
     printWebPage(client);
-    delay(2);
+    // Flush and give the network stack time to transmit the complete HTML
+    // response before closing the TCP connection.
+    client.flush();
+    delay(500);
     client.stop();
 }
 
@@ -177,7 +207,6 @@ void connectWiFi() {
         delay(2000);
     }
     boardIp = WiFi.localIP();
-    webServer.begin();
 }
 
 void FRPostProcess(std::vector<FaceRecognitionResult> results) {
@@ -240,6 +269,7 @@ void setup() {
 
     OSD.configVideo(CHANNEL, videoConfig);
     OSD.begin();
+    webServer.begin();
     drawNetworkInfo();
 
     Serial.print("Web control: http://");

@@ -26,6 +26,9 @@
 #define NN_WIDTH      576
 #define NN_HEIGHT     320
 #define SERVO_PIN     21
+#define GREEN_LED_PIN 24
+#define YELLOW_LED_PIN 23
+#define RED_LED_PIN    22
 
 VideoSetting videoConfig(VIDEO_FHD, 30, VIDEO_H264, 0);
 VideoSetting nnConfig(NN_WIDTH, NN_HEIGHT, 10, VIDEO_RGB, 0);
@@ -49,6 +52,7 @@ uint16_t lastFaceCount = 0;
 
 volatile bool knownFacePresent = false;
 volatile bool knownFaceTriggerRequested = false;
+volatile uint8_t faceLightState = 0;  // 0: no face, 1: unknown only, 2: known face
 bool knownFaceLatched = false;
 bool servoActive = false;
 unsigned long servoReturnAt = 0;
@@ -223,6 +227,7 @@ void FRPostProcess(std::vector<FaceRecognitionResult> results) {
         knownFaceTriggerRequested = true;
     }
     knownFacePresent = known;
+    faceLightState = known ? 2 : (lastFaceCount > 0 ? 1 : 0);
     OSD.update(CHANNEL);
 }
 
@@ -249,6 +254,12 @@ void updateServo() {
     }
 }
 
+void updateFaceLights() {
+    digitalWrite(GREEN_LED_PIN, faceLightState == 2 ? HIGH : LOW);
+    digitalWrite(RED_LED_PIN, faceLightState == 1 ? HIGH : LOW);
+    digitalWrite(YELLOW_LED_PIN, faceLightState == 0 ? HIGH : LOW);
+}
+
 void setup() {
     Serial.begin(115200);
     u8g2.setI2CAddress(0x3C * 2);
@@ -256,6 +267,10 @@ void setup() {
     drawStatus("Face + SG90", "Starting...");
     servo.attach(SERVO_PIN);
     servo.write(0);
+    pinMode(GREEN_LED_PIN, OUTPUT);
+    pinMode(YELLOW_LED_PIN, OUTPUT);
+    pinMode(RED_LED_PIN, OUTPUT);
+    updateFaceLights();
     connectWiFi();
 
     videoConfig.setBitrate(2 * 1024 * 1024);
@@ -293,6 +308,7 @@ void setup() {
 
 void loop() {
     handleWebClient();
+    updateFaceLights();
     updateServo();
     delay(10);
 }

@@ -11,4 +11,4 @@ HUB-8735 Ultra RTSP face recognition with a Wi-Fi web control page.
 
 The web buttons replace the serial commands for registering, deleting, resetting, backing up and restoring registered faces.
 
-The control page embeds the 640×360 MJPEG preview. The HD H.264 RTSP stream remains available separately for VLC or another RTSP player.
+The control page embeds the 480×270 MJPEG preview at about 8 FPS. The HD H.264 RTSP stream remains available separately for VLC or another RTSP player.

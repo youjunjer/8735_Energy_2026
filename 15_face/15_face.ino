@@ -27,7 +27,8 @@
 #define NN_HEIGHT     320
 
 VideoSetting videoConfig(VIDEO_FHD, 30, VIDEO_H264, 0);
-VideoSetting jpegConfig(640, 360, CAM_FPS, VIDEO_JPEG, 1);
+// Lower-resolution preview keeps the web control page responsive.
+VideoSetting jpegConfig(480, 270, CAM_FPS, VIDEO_JPEG, 1);
 VideoSetting nnConfig(NN_WIDTH, NN_HEIGHT, 10, VIDEO_RGB, 0);
 NNFaceDetectionRecognition faceRecognition;
 RTSP rtsp;
@@ -213,8 +214,8 @@ void sendMjpegFrame() {
         return;
     }
 
-    // Limit preview to about 10 FPS so the control page remains responsive.
-    if ((unsigned long)(millis() - lastMjpegFrameMs) < 100) return;
+    // Limit preview to about 8 FPS so the control page remains responsive.
+    if ((unsigned long)(millis() - lastMjpegFrameMs) < 125) return;
     lastMjpegFrameMs = millis();
 
     Camera.getImage(CHANNEL_JPEG, &jpegImageAddress, &jpegImageLength);

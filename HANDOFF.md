@@ -102,6 +102,7 @@ upload success
 - `14_rtsp`：依 HUB-8735 Ultra `StreamRTSP/SingleVideoWithAudio` 範例，使用 Wi-Fi 傳輸 HD 1280×720 H.264 影像與 AAC 聲音；OLED 顯示連線過程、板端 IP 與 RTSP 連接埠。
 - `15_face`：以 Wi-Fi 網頁介面取代人臉辨識序列埠指令；網頁按鈕可登錄、刪除、清除、備份與還原人臉資料，並保留 RTSP、OSD 與 OLED 顯示。
 - `15_face`：網頁控制頁使用 port 80，新增 port 8080 的 640×360 MJPEG 即時預覽；HD H.264 RTSP 串流維持不變。
+- `15_face`：目前網頁 MJPEG 預覽已調整為 480×270、約 8 FPS；HD H.264 RTSP 串流維持不變。
 
 目前最新使用程式是：
 `D:\115智慧節能\15_face\15_face.ino`
@@ -142,6 +143,7 @@ RTSP 測試程式為：
 - v0.16.0：新增 `14_rtsp`，提供 HD H.264 + AAC 音訊 RTSP 串流，OLED 顯示連線狀態、IP 與 RTSP 連接埠；待硬體驗證。
 - v0.17.0：新增 `15_face`，以 port 80 Wi-Fi 網頁按鈕取代人臉辨識序列埠指令；已編譯成功並燒錄至 COM4。
 - v0.18.0：`15_face` 新增 port 8080 的 MJPEG 網頁預覽，控制頁可邊看影像邊操作；已編譯成功並燒錄至 COM4，Arduino CLI 回報 `upload success`。
+- v0.18.1：`15_face` 網頁 MJPEG 預覽改為 480×270、約 8 FPS，以改善網頁反應速度；已編譯成功並燒錄至 COM4，Arduino CLI 回報 `upload success`。
 - v0.11.1：修正 `10_wifi_aqi_oled` 的 HTTP chunked 回應解析，已編譯並於 COM3 成功燒錄。使用 Wi-Fi SSID `a`，每 60 秒抓取 API 並顯示桃園市中壢 AQI／PM2.5。
 - v0.11.0：新增 `10_wifi_aqi_oled`，已編譯成功；首次版本尚未燒錄。
 - v0.9.1：蜂鳴器由 IO18 改到 IO11，已編譯並於 COM3 成功燒錄。

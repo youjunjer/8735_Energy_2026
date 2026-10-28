@@ -108,6 +108,7 @@ upload success
 - `17_face_sg90`：已移除不穩定的 MJPEG 預覽與 port 8080，只保留 HD H.264 RTSP 與 port 80 網頁控制。
 - `17_face_sg90`：新增辨識燈號，已知人臉綠燈 IO24、只有 unknown 紅燈 IO22、無人臉黃燈 IO23。
 - `18_yolo`：參考內建 `12_yolo`，使用 YOLOv4-tiny 物件辨識與 FHD H.264 RTSP；OLED 顯示 Wi-Fi 連線過程、取得後的 IP 與 RTSP 埠號。已於 2026-10-28 編譯並成功燒錄至 COM4。
+- `19_yolo_person`：由 `18_yolo` 改為只標示 person，紅色外框線寬 5，左上角顯示 `Person=n`；已於 2026-10-28 編譯並成功燒錄至 COM4。
 
 目前最新使用程式是：
 `D:\115智慧節能\15_face\15_face.ino`
@@ -155,6 +156,7 @@ RTSP 測試程式為：
 - v0.20.2：`17_face_sg90` 新增綠／紅／黃三色 LED 辨識狀態控制；已編譯成功並燒錄至 COM4，Arduino CLI 回報 `upload success`。
 - v0.20.3：燈號判定改用人臉辨識回呼的 `results.size()`，避免函式庫內部計數同步時序導致辨識結果未反映到燈號；已編譯成功並燒錄至 COM4，Arduino CLI 回報 `upload success`。
 - v0.21.0：新增 `18_yolo`，依內建 `12_yolo` 範例加入 YOLOv4-tiny 物件辨識、FHD H.264 RTSP 與 OLED Wi-Fi 連線／IP 顯示；已編譯成功並燒錄至 COM4，Arduino CLI 回報 `upload success`。
+- v0.22.0：新增 `19_yolo_person`，只辨識 person，使用紅色 5px 外框並在左上角顯示 `Person=n`；已編譯成功並燒錄至 COM4，Arduino CLI 回報 `upload success`。
 - v0.11.1：修正 `10_wifi_aqi_oled` 的 HTTP chunked 回應解析，已編譯並於 COM3 成功燒錄。使用 Wi-Fi SSID `a`，每 60 秒抓取 API 並顯示桃園市中壢 AQI／PM2.5。
 - v0.11.0：新增 `10_wifi_aqi_oled`，已編譯成功；首次版本尚未燒錄。
 - v0.9.1：蜂鳴器由 IO18 改到 IO11，已編譯並於 COM3 成功燒錄。
